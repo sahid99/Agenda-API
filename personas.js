@@ -1,19 +1,10 @@
 class Persona{
-    constructor(id_persona,nombre,apellidos,edad,telefono,ocupacion){
-        this.id_persona = id_persona
+    constructor(nombre,apellidos,edad,telefono,ocupacion){
         this.nombre = nombre
         this.apellidos = apellidos
         this.edad = edad
         this.telefono = telefono
         this.ocupacion = ocupacion
-    }
-
-    getiId_persona(){
-        return this.id_persona
-    }
-    
-    setId_persona(id_persona){
-        this.id_persona = id_persona
     }
 
     getNombre(){
