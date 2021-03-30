@@ -36,8 +36,27 @@ async function altaPersona(nuevaPersona){
 
 }
 
+async function bajaPersona(id_persona){
+    try{
+        let pool = await sql.connect(config)
+        let persona = await pool.query`select * from dhkbwo_personas where id_persona = ${id_persona}`
+        if(persona == null){
+                persona = null
+                return persona.recordsets
+        }else{
+            await pool.request().query("delete from dhkbwo_personas where id_persona ="+id_persona)
+            return persona.recordsets  
+        }
+        
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
 
 module.exports = {
     getPersonas : getPersonas,
     altaPersona: altaPersona,
+    bajaPersona: bajaPersona,
 }
