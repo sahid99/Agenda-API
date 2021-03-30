@@ -3,6 +3,7 @@ const sql = require('mssql')
 const personas = require('./personas')
 
 const axios = require('axios');
+const Persona = require('./personas');
 
 async function getPersonas() {
     try{
@@ -54,9 +55,71 @@ async function bajaPersona(id_persona){
     }
 }
 
+async function actualizarPersona(id_persona,datosPersona){
+    try{
+        
+        const persona = new Persona()
+        let nuevaPersona ={
+            nombre:"",
+            apellidos:"",
+            edad:"",
+            telefono:"",
+            ocupacion:"",
+            precio:null
+        }
+        let pool = await sql.connect(config)
+        await pool.query`select * from dhkbwo_personas where id_persona = ${id_persona}`.then(promise=>{
+            if(promise.recordsets[0]==""){ 
+                console.log("aqui entro"+promise.recordsets[0])
+                promise.recordsets[0] = ""
+                return promise.recordsets[0]
+            }
+            else{
+                console.log("aqui entro2")
+                persona.setNombre(promise.recordsets[0][0].nombre)
+                persona.setApellidos(promise.recordsets[0][0].apellidos)
+                persona.setEdad(promise.recordsets[0][0].edad)
+                persona.setTelefono(promise.recordsets[0][0].telefono)
+                persona.setOcupacion(promise.recordsets[0][0].ocupacion)
+                
+                if(datosPersona.nombre == null) nuevaPersona.nombre = persona.getNombre()
+                else nuevaPersona.nombre = datosPersona.nombre 
+    
+                if(datosPersona.edad == null) nuevaPersona.edad = persona.getEdad()
+                else nuevaPersona.edad = datosPersona.edad 
+    
+                if(datosPersona.apellidos == null) nuevaPersona.apellidos = persona.getApellidos()
+                else nuevaPersona.apellidos = datosPersona.apellidos 
+    
+                if(datosPersona.telefono == null) nuevaPersona.telefono = persona.getTelefono()
+                else nuevaPersona.telefono = datosPersona.telefono 
+    
+                if(datosPersona.ocupacion == null) nuevaPersona.ocupacion = persona.getOcupacion()
+                else nuevaPersona.ocupacion = datosPersona.ocupacion 
+
+                let updateInfo = pool.request()
+                .input('nombre',sql.NVarChar,nuevaPersona.nombre)
+                .input('apellidos',sql.NVarChar,nuevaPersona.apellidos)
+                .input('edad',sql.Int,nuevaPersona.edad)
+                .input('telefono',sql.NVarChar,nuevaPersona.telefono)
+                .input('ocupacion',sql.NVarChar,nuevaPersona.ocupacion)
+                .query(`update dhkbwo_personas set nombre=@nombre,apellidos=@apellidos,edad=@edad,telefono=@telefono,ocupacion=@ocupacion where id_persona =${id_persona}`)
+                
+            }
+        }).then(promise=>{ 
+            return nuevaPersona
+        })
+        
+
+    }catch(err){
+        console.log(err)
+    }
+
+}
 
 module.exports = {
     getPersonas : getPersonas,
     altaPersona: altaPersona,
     bajaPersona: bajaPersona,
+    actualizarPersona: actualizarPersona,
 }
