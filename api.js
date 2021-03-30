@@ -22,13 +22,17 @@ router.route('/').get((request,response)=>{
     response.json({message: 'hey im there'});
 })
 
+
+
+
+
+
 router.route('/getPersonas').get((request,response)=>{
 
     db.getPersonas().then(result=>{
         response.json(result[0])    
     })
 })
-
 
 var port = process.env.port || 8090
 app.listen(port)
