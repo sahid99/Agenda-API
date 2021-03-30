@@ -37,6 +37,18 @@ router.route('/altaPersona').post((request,response)=>{
     })  
 })
 
+router.route('/bajaPersona/:id_persona').delete((request,response)=>{
+    console.log(request.params.id_persona)
+    db.bajaPersona(request.params.id_persona).then(result=>{
+        if (result == ""){ 
+            return response.json({message:"elemento no encontrado"})
+        }
+        else{
+            return response.json(result)
+        }
+    })
+})
+
 var port = process.env.port || 8090
 app.listen(port)
 console.log('agenda2021 API is running at '+port)
